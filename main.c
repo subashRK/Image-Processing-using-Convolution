@@ -9,11 +9,13 @@
   #include<stdlib.h>
 #endif
 
-int main(int argc, char **argv) {
-  FILE *fp;
-  PIXELS pixels;
-  pixel_c size;
+FILE *fp;
+PIXELS pixels;
+pixel_c size;
+pixel_c w;
+pixel_c h;
 
+int main(int argc, char **argv) {
   if (argc <= 3) {
     fprintf(stderr, "Not enough arguments given!\n");
     return 1;

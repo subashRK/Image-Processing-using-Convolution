@@ -6,7 +6,7 @@
   #include"utils.h"
 #endif
 
-void img_blur(PIXELS pixels, pixel_c size) {
+void img_blur() {
   float kernel[KERNEL_ORD][KERNEL_ORD] = { 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9 };
 
   // process_pixels();
