@@ -11,3 +11,9 @@ void img_blur() {
   perform_convolution(kernel);
   write_pixels();
 }
+
+void hrz_edge_det() {
+  float kernel[KERNEL_ORD][KERNEL_ORD] = { -1.0/4, 0, 1.0/4, 0, 0, 0, -1.0/4, 0, 1.0/4 };
+  perform_convolution(kernel);
+  write_pixels();
+}
