@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
   }
 
   read_pixels();
-  img_blur();
+  img_blur  ();
 
   return 0;
 }
