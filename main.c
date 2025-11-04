@@ -9,28 +9,46 @@
   #include<stdlib.h>
 #endif
 
+#ifndef __STRING_H_SOURCED__
+  #include<string.h>
+#endif
+
 FILE *fp;
+char ofname[256];
 PIXELS pixels;
 pixel_c size;
 pixel_c w;
 pixel_c h;
 
 int main(int argc, char **argv) {
+  char ifname[256];
+
   if (argc <= 3) {
     fprintf(stderr, "Not enough arguments given!\n");
     return 1;
   }
 
-  for (int i = 2; (i < argc) && !sscanf(argv[i], "--pixels=%lu", &size); i++);
+  for (int i = 1; (i < argc) && !sscanf(argv[i], "--size=%lux%lu", &w, &h); i++);
+  for (int i = 1; (i < argc) && !sscanf(argv[i], "-i %s", ifname); i++);
+  for (int i = 1; (i < argc) && !sscanf(argv[i], "-o %s", ofname); i++);
 
-  if (!size) {
-    fprintf(stderr, "Please specify the no. of pixels!\n");
+  if (!w || !h) {
+    fprintf(stderr, "Please specify the size!\n");
     return 1; 
   }
 
+  strcat(ifname, "\0");
+  strcat(ofname, "\0");
+
+  if (!strcmp(ifname, "\0") || !strcmp(ofname, "\0")) {
+    fprintf(stderr, "Please specify the input and output file names!\n");
+    return 1; 
+  }
+
+  size = w * h;
   pixels = (PIXELS) malloc(size * 3);
 
-  if ((fp = fopen(argv[1], "rb")) == NULL) {
+  if ((fp = fopen(ifname, "rb")) == NULL) {
     fprintf(stderr, "Something went wrong while opening the file!\n");
     return 1;
   }

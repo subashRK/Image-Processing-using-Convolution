@@ -8,6 +8,7 @@
 #endif
 
 extern FILE *fp;
+extern char ofname[256];
 extern PIXELS pixels;
 extern pixel_c size;
 extern pixel_c w;

@@ -8,4 +8,6 @@ typedef unsigned char PIXEL;
 typedef PIXEL (*PIXELS)[3];
 typedef unsigned long int pixel_c;
 
-void read_pixels(PIXELS, FILE *, pixel_c);
+void read_pixels();
+void write_pixels();
+void perform_convolution(float (*)[3]);

@@ -33,7 +33,7 @@ void allocate_prev_pixels(PIXELS surr_pixels, pixel_c curr_pix, PIXEL color) {
   }
 }
 
-int convolution(float (*kernel)[3]) {
+void perform_convolution(float (*kernel)[3]) {
   PIXEL pixel[3];
 
   for (pixel_c i = 0; i < size; i++) {
@@ -71,12 +71,28 @@ void read_pixels() {
   pixel_c i = 0;
 
   while (!fread((pixels + i++), 1, 3, fp)) {
-    if (i == size) return;
-
     if (i > size) {
       fprintf(stderr, "Please give the right no. of pixels!\n");
       exit(1);
     }
-
   }
+
+  if (i < size) {
+    fprintf(stderr, "Please give the right no. of pixels!\n");
+    exit(1);
+  }
+}
+
+void write_pixels() {
+  if (fp != NULL) fclose(fp);
+
+  FILE *ofp = fopen(ofname, "wb");
+
+  if (!ofp) {
+    fprintf(stderr, "Can't write content to output file!\n");
+    exit(1);
+  }
+
+  fwrite(pixels, sizeof pixels, 1, fp);
+  fclose(ofp);
 }
