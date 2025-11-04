@@ -22,23 +22,33 @@ pixel_c h;
 
 int main(int argc, char **argv) {
   char ifname[256];
+  int i = 0;
 
   if (argc <= 3) {
     fprintf(stderr, "Not enough arguments given!\n");
     return 1;
   }
 
-  for (int i = 1; (i < argc) && !sscanf(argv[i], "--size=%lux%lu", &w, &h); i++);
-  for (int i = 1; (i < argc) && !sscanf(argv[i], "-i %s", ifname); i++);
-  for (int i = 1; (i < argc) && !sscanf(argv[i], "-o %s", ofname); i++);
+  for (i = 1; (i < argc) && !sscanf(argv[i], "--size=%lux%lu", &w, &h); i++);
+
+  for (i = 1; (i < argc); i++)
+    if (sscanf(ifname, "--size=%lux%lu", &w, &h)) continue;
+    else {
+      sscanf(argv[i], "%[^\n]s", ifname);
+      break;
+    };
+
+  for (i = i + 1; (i < argc); i++)
+    if (sscanf(ifname, "--size=%lux%lu", &w, &h)) continue;
+    else {
+      sscanf(argv[i], "%[^\n]s", ofname);
+      break;
+    };
 
   if (!w || !h) {
     fprintf(stderr, "Please specify the size!\n");
     return 1; 
   }
-
-  strcat(ifname, "\0");
-  strcat(ofname, "\0");
 
   if (!strcmp(ifname, "\0") || !strcmp(ofname, "\0")) {
     fprintf(stderr, "Please specify the input and output file names!\n");
@@ -53,7 +63,8 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  read_pixels(pixels, fp, size);
+  read_pixels();
+  img_blur();
 
   return 0;
 }

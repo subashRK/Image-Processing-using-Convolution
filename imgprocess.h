@@ -1,0 +1,1 @@
+void img_blur();

@@ -14,33 +14,38 @@
   #include"main.h"
 #endif
 
-void allocate_prev_pixels(PIXELS surr_pixels, pixel_c curr_pix, PIXEL color) {
+void allocate_prev_pixels(PIXELS surr_pixels, pixel_c curr_pix, pixel_c color) {
   pixel_c current_row = curr_pix / w;
   pixel_c current_col = (curr_pix) % w;
 
   for (int i = -1; i <= 1; i++) {
-    for (int j = -1; i <= 1; j++) {
+    for (int j = -1; j <= 1; j++) {
       if (
-        current_row + i < 0 || current_row + i > h - 1 ||
-        current_col + j < 0 || current_col + j > w - 1 
+        (((long int) current_row + i) < 0) || (((long int) current_row + i) > (h - 1)) ||
+        (((long int) current_col + j) < 0) || (((long int) current_col + j) > (w - 1))
       ) {
         surr_pixels[i + 1][j + 1] = 0;
         continue;
       }
-
-      surr_pixels[i + 1][j + 1] = pixels[curr_pix + i * w + j][color];
+    
+      surr_pixels[i + 1][j + 1] = pixels[curr_pix + (i * w) + j][color];
     }
   }
 }
 
+PIXEL convolved_val(PIXELS surr_pixels, float (*kernel)[3]) {
+  PIXEL val = 0;
+
+  for (int i = 0; i < KERNEL_ORD; i++) {
+    for (int j = 0; j < KERNEL_ORD; j++) {
+      val += (surr_pixels[i][j] * kernel[i][j]);
+    }
+  }
+  return val;
+}
+
 void perform_convolution(float (*kernel)[3]) {
-  PIXEL pixel[3];
-
   for (pixel_c i = 0; i < size; i++) {
-    pixel[0] = pixels[0];
-    pixel[1] = pixels[1];
-    pixel[2] = pixels[2];
-
     PIXELS surr_pixels_r = (PIXELS) malloc(9);
     PIXELS surr_pixels_g = (PIXELS) malloc(9);
     PIXELS surr_pixels_b = (PIXELS) malloc(9);
@@ -55,31 +60,16 @@ void perform_convolution(float (*kernel)[3]) {
   }
 }
 
-PIXEL convolved_val(PIXELS surr_pixels, float (*kernel)[3]) {
-  PIXEL val = 0;
-
-  for (int i = 0; i < KERNEL_ORD; i++) {
-    for (int j = 0; j < KERNEL_ORD; j++) {
-      val += surr_pixels[i][j] * kernel[i][j];
-    }
-  }
-
-  return val;
-}
-
 void read_pixels() {
   pixel_c i = 0;
 
-  while (!fread((pixels + i++), 1, 3, fp)) {
+  while (fread((pixels + i++), 1, 3, fp) != 0) {
+    if (i == size) return;
+
     if (i > size) {
-      fprintf(stderr, "Please give the right no. of pixels!\n");
+      fprintf(stderr, "Please give the right no. of pixels! %dad\n", size == 1);
       exit(1);
     }
-  }
-
-  if (i < size) {
-    fprintf(stderr, "Please give the right no. of pixels!\n");
-    exit(1);
   }
 }
 
@@ -93,6 +83,6 @@ void write_pixels() {
     exit(1);
   }
 
-  fwrite(pixels, sizeof pixels, 1, fp);
+  fwrite(pixels, 1, size * 3, ofp);
   fclose(ofp);
 }

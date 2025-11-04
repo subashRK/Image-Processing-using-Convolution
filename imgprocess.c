@@ -7,7 +7,7 @@
 #endif
 
 void img_blur() {
-  float kernel[KERNEL_ORD][KERNEL_ORD] = { 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9 };
+  float kernel[KERNEL_ORD][KERNEL_ORD] = { 1.0/9, 1.0/9, 1.0/9, 1.0/9, 1.0/9, 1.0/9, 1.0/9, 1.0/9, 1.0/9 };
   perform_convolution(kernel);
   write_pixels();
 }
