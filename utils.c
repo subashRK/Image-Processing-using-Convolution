@@ -14,13 +14,21 @@
   #include"main.h"
 #endif
 
-int allocate_prev_pixels(PIXELS surr_pixels, pixel_c curr_pix, PIXEL color) {
+void allocate_prev_pixels(PIXELS surr_pixels, pixel_c curr_pix, PIXEL color) {
   pixel_c current_row = curr_pix / w;
-  pixel_c current_col = (curr_pix + 1) % w;
+  pixel_c current_col = (curr_pix) % w;
 
   for (int i = -1; i <= 1; i++) {
     for (int j = -1; i <= 1; j++) {
-      surr_pixels[i + 1][j + 1] = pixels[curr_pix + i * w + j][color]; // Wrong
+      if (
+        current_row + i < 0 || current_row + i > h - 1 ||
+        current_col + j < 0 || current_col + j > w - 1 
+      ) {
+        surr_pixels[i + 1][j + 1] = 0;
+        continue;
+      }
+
+      surr_pixels[i + 1][j + 1] = pixels[curr_pix + i * w + j][color];
     }
   }
 }
