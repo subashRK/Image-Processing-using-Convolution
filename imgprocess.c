@@ -24,7 +24,9 @@ void img_blur() {
 // 1.0/4, 0, -1.0/4, 0.5, 0, -0.5, 1.0/4, 0, -1.0/4 3b1b (Sketchy art)
 
 void hrz_edge_det() {
-  float kernel[KERNEL_ORD][KERNEL_ORD] = { 1.0/4, 0, -1.0/4, 0.5, 0, -0.5, 1.0/4, 0, -1.0/4 };
+  float kernel[KERNEL_ORD][KERNEL_ORD] = { 
+    1.0/4, 0, -1.0/4, 0.5, 0, -0.5, 1.0/4, 0, -1.0/4
+  };
   perform_convolution(kernel);
   write_pixels();
 }

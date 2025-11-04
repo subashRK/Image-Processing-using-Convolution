@@ -14,6 +14,8 @@
   #include"main.h"
 #endif
 
+static PIXELS temp_pixels;
+
 void allocate_prev_pixels(PIXELS surr_pixels, pixel_c curr_pix, pixel_c color) {
   pixel_c current_row = curr_pix / w;
   pixel_c current_col = (curr_pix) % w;
@@ -34,17 +36,20 @@ void allocate_prev_pixels(PIXELS surr_pixels, pixel_c curr_pix, pixel_c color) {
 }
 
 PIXEL convolved_val(PIXELS surr_pixels, float (*kernel)[3]) {
-  PIXEL val = 0;
+  float val = 0;
 
   for (int i = 0; i < KERNEL_ORD; i++) {
     for (int j = 0; j < KERNEL_ORD; j++) {
       val += (surr_pixels[i][j] * kernel[i][j]);
     }
   }
-  return val;
+
+  return (PIXEL) val;
 }
 
 void perform_convolution(float (*kernel)[3]) {
+  temp_pixels = (PIXELS) malloc(size * 3);
+
   for (pixel_c i = 0; i < size; i++) {
     PIXELS surr_pixels_r = (PIXELS) malloc(9);
     PIXELS surr_pixels_g = (PIXELS) malloc(9);
@@ -54,9 +59,9 @@ void perform_convolution(float (*kernel)[3]) {
     allocate_prev_pixels(surr_pixels_g, i, 1);
     allocate_prev_pixels(surr_pixels_b, i, 2);
 
-    pixels[i][0] = convolved_val(surr_pixels_r, kernel);
-    pixels[i][1] = convolved_val(surr_pixels_g, kernel);
-    pixels[i][2] = convolved_val(surr_pixels_b, kernel);
+    temp_pixels[i][0] = convolved_val(surr_pixels_r, kernel);
+    temp_pixels[i][1] = convolved_val(surr_pixels_g, kernel);
+    temp_pixels[i][2] = convolved_val(surr_pixels_b, kernel);
   }
 }
 
@@ -67,7 +72,7 @@ void read_pixels() {
     if (i == size) return;
 
     if (i > size) {
-      fprintf(stderr, "Please give the right no. of pixels! %dad\n", size == 1);
+      fprintf(stderr, "Please give the right no. of pixels!", size == 1);
       exit(1);
     }
   }
@@ -83,6 +88,6 @@ void write_pixels() {
     exit(1);
   }
 
-  fwrite(pixels, 1, size * 3, ofp);
+  fwrite(temp_pixels, 1, size * 3, ofp);
   fclose(ofp);
 }
