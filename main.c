@@ -32,7 +32,8 @@ int main(int argc, char **argv) {
   for (i = 1; (i < argc) && (sscanf(argv[i], "--size=%lux%lu", &w, &h) != 2); i++);
 
   for (i = 1; (i < argc); i++) {
-    if (sscanf(argv[i], "--size=%lux%lu", &w, &h)) continue;
+    if (sscanf(argv[i], "--size=%lux%lu", &w, &h)) 
+      continue;
     else {
       sscanf(argv[i], "%s", ifname);
       break;
@@ -40,7 +41,8 @@ int main(int argc, char **argv) {
   }
 
   for (i = i + 1; (i < argc); i++) {
-    if (sscanf(argv[i], "--size=%lux%lu", &w, &h)) continue;
+    if (sscanf(argv[i], "--size=%lux%lu", &w, &h)) 
+      continue;
     else {
       sscanf(argv[i], "%s", ofname);
       break;
@@ -67,7 +69,9 @@ int main(int argc, char **argv) {
 
   read_pixels();
   // img_blur();
-  hrz_edge_det();
+  // hrz_edge_det();
+  // ver_edge_det();
+  bw_img();
 
   return 0;
 }

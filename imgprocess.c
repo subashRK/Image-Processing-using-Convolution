@@ -2,6 +2,18 @@
   #include<stdio.h>
 #endif
 
+#ifndef size_t
+  #include<stdlib.h>
+#endif
+
+#ifndef __STRING_H_SOURCED__
+  #include<string.h>
+#endif
+
+#ifndef MAIN_INCLUDED
+  #include"main.h"
+#endif
+
 #ifndef KERNEL_ORD
   #include"utils.h"
 #endif
@@ -29,4 +41,68 @@ void hrz_edge_det() {
   };
   perform_convolution(kernel);
   write_pixels();
+}
+
+void ver_edge_det() {
+  float kernel[KERNEL_ORD][KERNEL_ORD] = { 
+    -1.0/4, -0.5, -1.0/4, 0, 0, 0, 1.0/4, 0.5, 1.0/4
+  };
+  perform_convolution(kernel);
+  write_pixels();
+}
+
+void gray_edge_det(PIXEL *gray_pixels, float (*kernel)[3], PIXEL threshold) {
+  PIXEL neighbourhood[3][3];
+  PIXEL temp_pixels[size];
+
+  for (int curr_pix = 0; curr_pix < size; curr_pix++) {
+    pixel_c current_row = curr_pix / w;
+    pixel_c current_col = curr_pix % w;
+
+    for (int i = -1; i <= 1; i++) {
+      for (int j = -1; j <= 1; j++) {
+        if (
+          (((long int) current_row + i) < 0) || (((long int) current_row + i) > (h - 1)) ||
+          (((long int) current_col + j) < 0) || (((long int) current_col + j) > (w - 1))
+        ) {
+          neighbourhood[i + 1][j + 1] = gray_pixels[curr_pix];
+          continue;
+        }
+      
+        neighbourhood[i + 1][j + 1] = gray_pixels[curr_pix + (i * w) + j];
+      }
+    }
+
+    float val = 0;
+
+    for (int i = 0; i < KERNEL_ORD; i++)
+      for (int j = 0; j < KERNEL_ORD; j++) {
+        val += kernel[i][j] * neighbourhood[i][j];
+      }
+
+    temp_pixels[curr_pix] = 255 - (val < threshold) * 255;
+    // temp_pixels[curr_pix] = (val < threshold) * 255; -> black edge
+  }
+
+  write_gray_pixels(temp_pixels);
+}
+
+PIXEL *gen_gray_scale() {
+  PIXEL *gray_pixels = malloc(size);
+
+  for (int i = 0; i < size; i++)
+    gray_pixels[i] = ((short int) pixels[i][0] + pixels[i][1] + pixels[i][2])/3;
+  
+  // write_gray_pixels(gray_pixels);
+  return gray_pixels;
+}
+
+void bw_img() {
+  float kernel[KERNEL_ORD][KERNEL_ORD] = { 
+    1.0/4, 0, -1.0/4, 0.5, 0, -0.5, 1.0/4, 0, -1.0/4
+  };
+  PIXEL *gray_pixels = gen_gray_scale();
+  PIXEL threshold = 7;
+
+  gray_edge_det(gray_pixels, kernel, threshold);
 }
