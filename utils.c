@@ -68,13 +68,13 @@ void perform_convolution(float (*kernel)[3]) {
 void read_pixels() {
   pixel_c i = 0;
 
-  while (fread((pixels + i++), 1, 3, fp) != 0) {
+  while (!fread((pixels + i++), 3, 1, fp)) {
     if (i == size) return;
+  }
 
-    if (i > size) {
-      fprintf(stderr, "Please give the right no. of pixels!", size == 1);
-      exit(1);
-    }
+  if (i < size) {
+    fprintf(stderr, "Please give the right no. of pixels!\n");
+    exit(1);
   }
 }
 

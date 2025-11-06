@@ -29,21 +29,23 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  for (i = 1; (i < argc) && !sscanf(argv[i], "--size=%lux%lu", &w, &h); i++);
+  for (i = 1; (i < argc) && (sscanf(argv[i], "--size=%lux%lu", &w, &h) != 2); i++);
 
-  for (i = 1; (i < argc); i++)
-    if (sscanf(ifname, "--size=%lux%lu", &w, &h)) continue;
+  for (i = 1; (i < argc); i++) {
+    if (sscanf(argv[i], "--size=%lux%lu", &w, &h)) continue;
     else {
-      sscanf(argv[i], "%[^\n]s", ifname);
+      sscanf(argv[i], "%s", ifname);
+      break;
+    }
+  }
+
+  for (i = i + 1; (i < argc); i++) {
+    if (sscanf(argv[i], "--size=%lux%lu", &w, &h)) continue;
+    else {
+      sscanf(argv[i], "%s", ofname);
       break;
     };
-
-  for (i = i + 1; (i < argc); i++)
-    if (sscanf(ifname, "--size=%lux%lu", &w, &h)) continue;
-    else {
-      sscanf(argv[i], "%[^\n]s", ofname);
-      break;
-    };
+  }
 
   if (!w || !h) {
     fprintf(stderr, "Please specify the size!\n");
