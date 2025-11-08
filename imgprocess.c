@@ -80,6 +80,7 @@ void gray_edge_det(PIXEL *gray_pixels, float (*kernel)[3]) {
         val += (kernel[i][j] * neighbourhood[i][j]);
       }
 
+    // temp_pixels[curr_pix] = 255 - val; /* for black border with white foreground */
     temp_pixels[curr_pix] = val;
   }
 
@@ -90,6 +91,7 @@ PIXEL *gen_gray_scale(PIXEL threshold) {
   PIXEL *gray_pixels = malloc(size);
 
   for (int i = 0; i < size; i++)
+    // Threshold is used, so that the pixel value is a discrete value (either 0 or 255) not an analog value (from 0 to 255)
     gray_pixels[i] = 255 - (((((short int) pixels[i][0] + pixels[i][1] + pixels[i][2])/3) < threshold) * 255);
   
   return gray_pixels;
@@ -99,7 +101,7 @@ void bw_img() {
   float kernel[KERNEL_ORD][KERNEL_ORD] = { 
     1.0/4, 0, -1.0/4, 0.5, 0, -0.5, 1.0/4, 0, -1.0/4
   };
-  PIXEL threshold = 128;
+  PIXEL threshold = 128; // adjust threshold value to get different results
   PIXEL *gray_pixels = gen_gray_scale(threshold);
 
   gray_edge_det(gray_pixels, kernel);
