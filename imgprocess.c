@@ -65,7 +65,7 @@ void gray_edge_det(PIXEL *gray_pixels, float (*kernel)[3], PIXEL threshold) {
           (((long int) current_row + i) < 0) || (((long int) current_row + i) > (h - 1)) ||
           (((long int) current_col + j) < 0) || (((long int) current_col + j) > (w - 1))
         ) {
-          neighbourhood[i + 1][j + 1] = gray_pixels[curr_pix];
+          neighbourhood[i + 1][j + 1] = (gray_pixels[curr_pix] < threshold);
           continue;
         }
       
@@ -80,8 +80,8 @@ void gray_edge_det(PIXEL *gray_pixels, float (*kernel)[3], PIXEL threshold) {
         val += kernel[i][j] * neighbourhood[i][j];
       }
 
-    temp_pixels[curr_pix] = 255 - (val < threshold) * 255;
-    // temp_pixels[curr_pix] = (val < threshold) * 255; -> black edge
+    // temp_pixels[curr_pix] = 255 - (val < threshold) * 255;
+    temp_pixels[curr_pix] = val;
   }
 
   write_gray_pixels(temp_pixels);
@@ -102,7 +102,7 @@ void bw_img() {
     1.0/4, 0, -1.0/4, 0.5, 0, -0.5, 1.0/4, 0, -1.0/4
   };
   PIXEL *gray_pixels = gen_gray_scale();
-  PIXEL threshold = 7;
+  PIXEL threshold = 128;
 
   gray_edge_det(gray_pixels, kernel, threshold);
 }
