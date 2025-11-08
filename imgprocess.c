@@ -51,7 +51,7 @@ void ver_edge_det() {
   write_pixels();
 }
 
-void gray_edge_det(PIXEL *gray_pixels, float (*kernel)[3], PIXEL threshold) {
+void gray_edge_det(PIXEL *gray_pixels, float (*kernel)[3]) {
   PIXEL neighbourhood[3][3];
   PIXEL temp_pixels[size];
 
@@ -65,7 +65,7 @@ void gray_edge_det(PIXEL *gray_pixels, float (*kernel)[3], PIXEL threshold) {
           (((long int) current_row + i) < 0) || (((long int) current_row + i) > (h - 1)) ||
           (((long int) current_col + j) < 0) || (((long int) current_col + j) > (w - 1))
         ) {
-          neighbourhood[i + 1][j + 1] = (gray_pixels[curr_pix] < threshold);
+          neighbourhood[i + 1][j + 1] = gray_pixels[curr_pix];
           continue;
         }
       
@@ -77,23 +77,21 @@ void gray_edge_det(PIXEL *gray_pixels, float (*kernel)[3], PIXEL threshold) {
 
     for (int i = 0; i < KERNEL_ORD; i++)
       for (int j = 0; j < KERNEL_ORD; j++) {
-        val += kernel[i][j] * neighbourhood[i][j];
+        val += (kernel[i][j] * neighbourhood[i][j]);
       }
 
-    // temp_pixels[curr_pix] = 255 - (val < threshold) * 255;
     temp_pixels[curr_pix] = val;
   }
 
   write_gray_pixels(temp_pixels);
 }
 
-PIXEL *gen_gray_scale() {
+PIXEL *gen_gray_scale(PIXEL threshold) {
   PIXEL *gray_pixels = malloc(size);
 
   for (int i = 0; i < size; i++)
-    gray_pixels[i] = ((short int) pixels[i][0] + pixels[i][1] + pixels[i][2])/3;
+    gray_pixels[i] = 255 - (((((short int) pixels[i][0] + pixels[i][1] + pixels[i][2])/3) < threshold) * 255);
   
-  // write_gray_pixels(gray_pixels);
   return gray_pixels;
 }
 
@@ -101,8 +99,8 @@ void bw_img() {
   float kernel[KERNEL_ORD][KERNEL_ORD] = { 
     1.0/4, 0, -1.0/4, 0.5, 0, -0.5, 1.0/4, 0, -1.0/4
   };
-  PIXEL *gray_pixels = gen_gray_scale();
   PIXEL threshold = 128;
+  PIXEL *gray_pixels = gen_gray_scale(threshold);
 
-  gray_edge_det(gray_pixels, kernel, threshold);
+  gray_edge_det(gray_pixels, kernel);
 }
