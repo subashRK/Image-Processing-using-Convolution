@@ -72,7 +72,10 @@ void perform_convolution(float (*kernel)[3]) {
 }
 
 void write_gray_pixels(PIXEL gray_pixels[size]) {
-  if (fp != NULL) fclose(fp);
+  if (fp) {
+    fclose(fp);
+    fp = NULL;
+  };
 
   FILE *ofp = fopen(ofname, "wb");
 
@@ -101,7 +104,10 @@ void read_pixels() {
 }
 
 void write_pixels() {
-  if (fp != NULL) fclose(fp);
+  if (fp) {
+    fclose(fp);
+    fp = NULL;
+  };
 
   FILE *ofp = fopen(ofname, "wb");
 
