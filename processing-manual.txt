@@ -1,0 +1,12 @@
+- Convert a image to binary file
+- Give the binary file as the input
+
+- How to run file
+  - ./convolve --size=widthxheight input_bin_path output_bin_path
+
+- convert output bin to jpg file
+  - ffmpeg -f rawvideo -pix_fmt gray -s widthxheight -i image.bin -y output.jpg
+    - f rawvideo -> binary raw file
+    - s size width and height
+    - pix_fmt gray -> since pixels are 8 bits (no RGB and only 0 - 255 indicating how white or black .i.e. grayscale)
+    
